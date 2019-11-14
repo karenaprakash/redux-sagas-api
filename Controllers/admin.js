@@ -22,7 +22,7 @@ exports.signupAdmin = (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(422)
             .json({
-                message: 'Validation Error.'
+                message: 'Please enter valid details.'
             });
     }
 
@@ -60,7 +60,7 @@ exports.loginAdmin = (req, res) => {
         console.log(errors.array())
         return res.status(422)
             .json({
-                message: 'Validation Error'
+                message: 'Invalide Email or Password.'
             });
     }
 
@@ -75,7 +75,7 @@ exports.loginAdmin = (req, res) => {
             });
 
         if (!admin) return res.status(400).json({
-            message: 'AuthFailed'
+            message: 'Authentication failed.'
         })
 
         admin.comparePassword(pass, (err, isMatch) => {
@@ -160,8 +160,11 @@ exports.getTasks = (req, res, next) => {
 
 //addTask  
 exports.addTask = (req, res, next) => {
-
+    console.log(req.admin)
+    req.body.adminId = req.admin._id;
     const task = new Task(req.body);
+    console.log('task',task)
+    console.log('id', req.body.adminId)
     task.save()
         .then(result => {
             console.log(result)
@@ -174,7 +177,7 @@ exports.addTask = (req, res, next) => {
         .catch(err => {
             res.status(400)
                 .json({
-                    message: 'Something Went Wrong!'
+                    message: 'Something Went Wrong'
                 })
         })
 

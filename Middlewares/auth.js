@@ -16,7 +16,7 @@
             if (err) {
                 let message;
                 if(err.message === 'jwt expired'){
-                    message = 'Token is Expire';
+                    message = 'Authentication Failed';
                 }else{
                     message = 'Somthing went wrong';
                 }

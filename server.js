@@ -16,8 +16,17 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 
+const Task = require('./Models/task')
+Task.find()
+.populate('Admin')
+.then(result=>{
+  console.log(result)
+})
+.catch(err=>{
+  console.log(err)
+})
 
-//mailSender()
+mailSender()
 
 const adminRouter = require('./Router/admin');
 app.use('/api/admin',adminRouter);
