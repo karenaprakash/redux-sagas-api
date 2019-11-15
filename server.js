@@ -15,17 +15,17 @@ const corsOptions = {
     credentials : true  
 }
 app.use(cors(corsOptions));
-
+/*
 const Task = require('./Models/task')
 Task.find()
-.populate('Admin')
+.populate('adminId')
 .then(result=>{
   console.log(result)
 })
 .catch(err=>{
   console.log(err)
 })
-
+*/
 mailSender()
 
 const adminRouter = require('./Router/admin');

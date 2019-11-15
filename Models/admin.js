@@ -69,7 +69,7 @@ adminSchema.methods.comparePassword = function(candidatePassword,cb){
 // generate token with expire time = 10 min and save in perticuler admin when admin makes login 
 adminSchema.methods.generateToken = function (cb){
     var admin = this;
-    var token = jwt.sign( { data : admin._id.toHexString() } , config.SECRET , {expiresIn : "10min" } )
+    var token = jwt.sign( { data : admin._id.toHexString() } , config.SECRET , {expiresIn : "1h" } )
    // console.log(token)
     admin.token =  token;
     admin.save(function(err,admin){

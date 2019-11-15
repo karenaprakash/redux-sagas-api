@@ -96,7 +96,7 @@ exports.loginAdmin = (req, res) => {
                 })
 
                 console.log('Admin Token is ' + admin.token);
-                res.cookie('auth', admin.token, { httpOnly: true });
+                res.cookie('auth', admin.token, { httpOnly: false });
 
                 res.status(200)
                     .json({

@@ -5,10 +5,13 @@
    
     let auth = (req,res,next) =>{
         console.log(req.cookies)
-        if (req.cookies.auth === undefined) return res.status(500)
+        if (req.cookies.auth === undefined) {
+            res.clearCookie("auth");
+            return res.status(400)
             .json({
               message : 'Authentication Failed'
             });
+        }
             
         let token = req.cookies.auth;
         console.log(`token is ${token}`)
@@ -20,15 +23,19 @@
                 }else{
                     message = 'Somthing went wrong';
                 }
+                res.clearCookie("auth");
                 return res.status(400)
                 .json({
                     message : message
                 });
             }
 
-            if (!admin) return res.status(400).json({
-                message : 'Authentication Failed'
-            })
+            if (!admin){
+                res.clearCookie("auth");
+                return res.status(400).json({
+                    message : 'Authentication Failed'
+                })
+            }
             
             req.token = token;
             req.admin = admin;
