@@ -4,16 +4,16 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const taskSchema = new Schema({
-    task : {
+    title : {
         type : String,
         required : true
     },
-    date : {
+    start : {
         type : Date,
         required : true
     },
-    time : {
-        type : String,
+    end : {
+        type : Date,
         required : true
     },
     adminId : {
