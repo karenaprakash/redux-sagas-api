@@ -1,5 +1,5 @@
 /**
- * admin model
+ * user model
  */
 
 const mongoose = require('mongoose');
@@ -8,7 +8,7 @@ const jwt =  require('jsonwebtoken');
 const config = require('../Config/config').get(process.env.NODE_ENV);
 const SALT_I = 10; 
 
-const adminSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({
     first_name : {
         type: String,
         required : true
@@ -32,6 +32,10 @@ const adminSchema = mongoose.Schema({
         required : true,
         minlength : 6
     },
+    roll : {
+        type : String,
+        required : true,
+    },
     token : {   
         type : String
     }
@@ -41,16 +45,17 @@ const adminSchema = mongoose.Schema({
 /*================= make encrypted password - using bcrypt
 ==============================================================*/
 //encrypt password before save
-adminSchema.pre('save',function(next){
-    var admin = this;
+userSchema.pre('save',function(next){
+    var user = this;
 
-    if(admin.isModified('password')){
+    /* --------------- handle password encryption -------------- */
+    if(user.isModified('password')){
         bcrypt.genSalt(SALT_I,function(err,salt){
             if(err) return next(err);
 
-            bcrypt.hash(admin.password,salt,function(err,hash){
+            bcrypt.hash(user.password,salt,function(err,hash){
              if(err) return next(err);
-             admin.password = hash;
+             user.password = hash;
                 next();
             })
 
@@ -59,37 +64,39 @@ adminSchema.pre('save',function(next){
         next()
     }
 })
+
+
 // comparePassword
-adminSchema.methods.comparePassword = function(candidatePassword,cb){
+userSchema.methods.comparePassword = function(candidatePassword,cb){
     bcrypt.compare(candidatePassword ,  this.password, function(err,isMatch){
         if( err ) return cb(err);
         cb(null,isMatch);
     })
 }
-// generate token with expire time = 10 min and save in perticuler admin when admin makes login 
-adminSchema.methods.generateToken = function (cb){
-    var admin = this;
-    var token = jwt.sign( { data : admin._id.toHexString() } , config.SECRET , {expiresIn : "1h" } )
+// generate token with expire time = 10 min and save in perticuler user when user makes login 
+userSchema.methods.generateToken = function (cb){
+    var user = this;
+    var token = jwt.sign( { data : user._id.toHexString() } , config.SECRET , {expiresIn : "1h" } )
    // console.log(token)
-    admin.token =  token;
-    admin.save(function(err,admin){
+    user.token =  token;
+    user.save(function(err,user){
         if( err ) return cb(err);
-        cb(null,admin)
+        cb(null,user)
     })
 }
-//verify token is valid or not for perticuler admin
-adminSchema.statics.findByToken = function(token,cb){
+//verify token is valid or not for perticuler user
+userSchema.statics.findByToken = function(token,cb){
 //console.log(token)
 
-    var admin = this;
+    var user = this;
 
      jwt.verify(token,config.SECRET,function(err,decode){
         if( err ) return cb(err);
 
         if(decode){
-            admin.findOne({"_id" : decode.data, "token" : token},function(err,admin){
+            user.findOne({"_id" : decode.data, "token" : token},function(err,user){
                 if( err ) return cb(err);
-                cb(null,admin)
+                cb(null,user)
              })
         }else{
             return cb(err)
@@ -99,16 +106,15 @@ adminSchema.statics.findByToken = function(token,cb){
 }
 
 //delete token for logout
-adminSchema.methods.deleteToken = function(token,cb){
-    var admin = this;
+userSchema.methods.deleteToken = function(token,cb){
+    var user = this;
 
-    admin.update({$unset:{token:1}},(err,admin)=>{
+    user.update({$unset:{token:1}},(err,user)=>{
         if( err ) return cb(err);
-        cb(null,admin)
+        cb(null,user)
     })  
 }
 
-const Admin = mongoose.model('Admin',adminSchema)
+const User = mongoose.model('User',userSchema)
 
-
-module.exports = Admin 
+module.exports = User

@@ -3,6 +3,23 @@
  */
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+
+const logSchema = new Schema({
+    userId : {
+        type : Schema.Types.ObjectId,
+        ref : 'User',
+        required: true
+    },
+    changeLog :  {
+        type : String,
+        required : true
+    },
+    date : {
+        type : Date,
+        required : true
+    },
+})
+
 const taskSchema = new Schema({
     title : {
         type : String,
@@ -16,12 +33,15 @@ const taskSchema = new Schema({
         type : Date,
         required : true
     },
-    adminId : {
+    userId : {
         type : Schema.Types.ObjectId,
-        ref : 'Admin',
+        ref : 'User',
         required: true
-    }
+    },
+    logs : [logSchema]
 },{timestamps:true});
+
+
 
 const Task = mongoose.model('Task',taskSchema);
 

@@ -15,21 +15,18 @@ const corsOptions = {
     credentials : true  
 }
 app.use(cors(corsOptions));
-/*
-const Task = require('./Models/task')
-Task.find()
-.populate('adminId')
-.then(result=>{
-  console.log(result)
-})
-.catch(err=>{
-  console.log(err)
-})
-*/
-mailSender()
 
-const adminRouter = require('./Router/admin');
-app.use('/api/admin',adminRouter);
+//mailSender()
+
+const userRouter = require('./Router/user');
+app.use('/api',userRouter);
+
+app.use((err,req,res,next) => {
+    res.status(400)
+    .json({
+        message: err
+    })
+})
 
 app.listen(3030,()=>{
     console.log('Server is running on 3030')

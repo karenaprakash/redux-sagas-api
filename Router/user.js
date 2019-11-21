@@ -1,29 +1,29 @@
  /**
  * 
- * Admin Router -------------------------------------------
+ * User Router -------------------------------------------
  * 
  */
 
 const express = require('express');
 const router  = express.Router();
 /*--------  Middleware --------------------------*/
-const auth = require('../Middlewares/auth');
+const auth = require('../Middlewares/userAuth');
 /*--------  Express Validator --------------------------*/
 const { check , body } = require('express-validator');
 
 const {
-    adminAuth,
-    signupAdmin,
-    loginAdmin,
-    adminLogout,        
+    userAuth,
+    signupUser,
+    loginUser,
+    userLogout,        
     getTasks,
     addTask,
     editTask,
     deleteTask
-} = require('../Controllers/admin');
+} = require('../Controllers/user');
 
-router.get("/auth",auth,adminAuth)
-router.post("/signup",[
+router.get("/auth",auth,userAuth)
+router.post("/signup",auth,[
     // username must be an email
     check('email').isEmail(),
     // password must be at least 5 chars long
@@ -37,15 +37,15 @@ router.post("/signup",[
     .not().isEmpty()
     .trim()
     .escape(),
-  ],signupAdmin);
+  ],signupUser);
 
 router.post("/login",[
     // username must be an email
     check('email').isEmail(),
     // password must be at least 5 chars long
     check('password').isLength({ min: 5 })
-  ],loginAdmin);
-router.get("/logout",auth,adminLogout)
+  ],loginUser);
+router.get("/logout",auth,userLogout)
 router.get('/get-tasks',auth,getTasks);
 router.post('/add-task',auth,addTask);
 router.post('/edit-task',auth,editTask);
